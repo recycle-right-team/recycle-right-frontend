@@ -1,0 +1,107 @@
+.rewards-config-page {
+  padding: 24px 28px;
+}
+
+.config-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.config-card {
+  background: var(--panel);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.config-header {
+  background: linear-gradient(135deg, var(--brand-600) 0%, var(--brand-700) 100%);
+  color: white;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.waste-icon {
+  font-size: 2.5rem;
+}
+
+.config-header h3 {
+  font-size: 1.5rem;
+}
+
+.config-body {
+  padding: 1.5rem;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-group label {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 1.125rem;
+  font-weight: 600;
+  transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--brand-600);
+}
+
+.save-btn {
+  width: 100%;
+  padding: 0.875rem;
+  background: var(--brand-600);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.save-btn:hover:not(:disabled) {
+  background: var(--brand-700);
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.config-footer {
+  padding: 1rem 1.5rem;
+  background: rgba(15, 23, 42, 0.03);
+  border-top: 1px solid var(--border);
+}
+
+.config-footer p {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.info-notice {
+  text-align: center;
+  padding: 1rem;
+  background: var(--brand-50);
+  border-radius: var(--radius-md);
+  color: var(--brand-700);
+  font-size: 0.95rem;
+}

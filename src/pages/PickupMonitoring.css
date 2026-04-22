@@ -1,0 +1,90 @@
+.pickup-monitoring-page {
+  padding: 24px 28px;
+}
+
+.map-container {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.info-window {
+  padding: 0.5rem;
+}
+
+.info-window h3 {
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+
+.info-window p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.collectors-list {
+  background: var(--panel);
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.collectors-list h2 {
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.collectors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.collector-card {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: border-color 0.2s;
+}
+
+.collector-card:hover {
+  border-color: var(--brand-600);
+}
+
+.collector-info h3 {
+  font-size: 1rem;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.collector-info p {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.collector-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.stat-badge {
+  padding: 0.25rem 0.75rem;
+  background: #f3f4f6;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.status-active {
+  color: #10b981;
+  font-weight: 600;
+  font-size: 0.875rem;
+}

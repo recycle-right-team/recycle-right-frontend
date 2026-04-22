@@ -1,0 +1,111 @@
+.leaderboard-page {
+  padding: 24px 28px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.filter-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  border-color: var(--brand-600);
+}
+
+.filter-btn.active {
+  background: var(--brand-600);
+  color: white;
+  border-color: var(--brand-600);
+}
+
+.leaderboard-container {
+  background: var(--panel);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.leaderboard-item:hover {
+  background: rgba(15, 23, 42, 0.02);
+}
+
+.leaderboard-item:last-child {
+  border-bottom: none;
+}
+
+.leaderboard-item.rank-1 {
+  background: linear-gradient(90deg, #fef3c7 0%, white 100%);
+}
+
+.leaderboard-item.rank-2 {
+  background: linear-gradient(90deg, #e5e7eb 0%, white 100%);
+}
+
+.leaderboard-item.rank-3 {
+  background: linear-gradient(90deg, #fed7aa 0%, white 100%);
+}
+
+.rank-badge {
+  font-size: 2rem;
+  width: 60px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.neighbourhood-info {
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.neighbourhood-info h3 {
+  font-size: 1.25rem;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.neighbourhood-info p {
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.weight-display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.weight-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--brand-600);
+}
+
+.weight-unit {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.no-data {
+  padding: 3rem;
+  text-align: center;
+  color: var(--muted);
+}
