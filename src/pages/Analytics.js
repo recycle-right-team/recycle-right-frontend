@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import {
   BarChart, Bar, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 import './Analytics.css';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6'];
 
-// 🧪 MOCK DATA
+/* =========================
+   KPI MOCKS
+========================= */
 const mockKPIs = {
   totalWaste: 12500,
   participationRate: 68,
@@ -18,6 +18,9 @@ const mockKPIs = {
   totalPayout: 320000
 };
 
+/* =========================
+   WASTE BREAKDOWN
+========================= */
 const mockWaste = {
   Plastic: 4200,
   Paper: 3000,
@@ -25,37 +28,29 @@ const mockWaste = {
   Glass: 3100
 };
 
-const mockRevenue = [
-  { collectors: 5, revenue: 1200 },
-  { collectors: 10, revenue: 2000 },
-  { collectors: 15, revenue: 2600 },
-  { collectors: 20, revenue: 3100 },
-  { collectors: 25, revenue: 3300 }
+/* =========================
+   SUPPLY vs DEMAND MODEL
+========================= */
+const mockSupplyDemand = [
+  { collectors: 5,  demand: 120, revenuePerCollector: 240 },
+  { collectors: 10, demand: 260, revenuePerCollector: 220 },
+  { collectors: 15, demand: 420, revenuePerCollector: 200 },
+  { collectors: 20, demand: 600, revenuePerCollector: 180 },
+  { collectors: 25, demand: 750, revenuePerCollector: 160 }
 ];
 
 function Analytics() {
   const [kpis, setKpis] = useState(mockKPIs);
   const [wasteByType, setWasteByType] = useState(mockWaste);
-  const [revenueData, setRevenueData] = useState(mockRevenue);
+  const [supplyDemand, setSupplyDemand] = useState(mockSupplyDemand);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchAnalytics();
+    setKpis(mockKPIs);
+    setWasteByType(mockWaste);
+    setSupplyDemand(mockSupplyDemand);
+    setLoading(false);
   }, []);
-
-  const fetchAnalytics = async () => {
-    try {
-      // 🔌 Replace with real API later
-      setKpis(mockKPIs);
-      setWasteByType(mockWaste);
-      setRevenueData(mockRevenue);
-
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching analytics:', err);
-      setLoading(false);
-    }
-  };
 
   const exportToPDF = () => {
     const doc = new jsPDF();
@@ -68,14 +63,14 @@ function Analytics() {
 
     doc.text(`Total Waste: ${kpis.totalWaste} kg`, 14, 45);
     doc.text(`Participation: ${kpis.participationRate}%`, 14, 52);
-    doc.text(`Avg Time: ${kpis.avgCollectionTime} min`, 14, 59);
+    doc.text(`Avg Collection Time: ${kpis.avgCollectionTime} min`, 14, 59);
     doc.text(`Total Payout: PKR ${kpis.totalPayout}`, 14, 66);
 
     doc.save('analytics.pdf');
   };
 
-  const wasteChartData = Object.entries(wasteByType).map(([type, value]) => ({
-    name: type,
+  const wasteChartData = Object.entries(wasteByType).map(([name, value]) => ({
+    name,
     value
   }));
 
@@ -90,7 +85,9 @@ function Analytics() {
       <div className="ui-pageHeader">
         <div>
           <h1 className="ui-pageTitle">Analytics Dashboard</h1>
-          <p className="ui-pageSubtitle">Operational insights & performance metrics</p>
+          <p className="ui-pageSubtitle">
+            Operational insights & demand–supply balance
+          </p>
         </div>
 
         <button className="export-btn" onClick={exportToPDF}>
@@ -98,7 +95,9 @@ function Analytics() {
         </button>
       </div>
 
-      {/* 🔝 KPI BAR */}
+      {/* =========================
+          KPI BAR
+      ========================= */}
       <div className="kpi-bar">
 
         <div className="kpi-card">
@@ -107,12 +106,12 @@ function Analytics() {
         </div>
 
         <div className="kpi-card">
-          <p>Participation</p>
+          <p>Participation Rate</p>
           <h2>{kpis.participationRate}%</h2>
         </div>
 
         <div className="kpi-card">
-          <p>Avg Collection</p>
+          <p>Avg Collection Time</p>
           <h2>{kpis.avgCollectionTime} min</h2>
         </div>
 
@@ -123,12 +122,14 @@ function Analytics() {
 
       </div>
 
-      {/* 📊 CHARTS */}
+      {/* =========================
+          CHARTS GRID
+      ========================= */}
       <div className="charts-grid">
 
-        {/* PIE */}
+        {/* 🍃 WASTE PIE CHART */}
         <div className="chart-card">
-          <h3>Waste by Type</h3>
+          <h3>Waste Diversion by Type</h3>
 
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -139,32 +140,77 @@ function Analytics() {
                 outerRadius={100}
                 label
               >
-                {wasteChartData.map((entry, index) => (
+                {wasteChartData.map((_, index) => (
                   <Cell key={index} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
               <Tooltip />
+              <Legend />
             </PieChart>
           </ResponsiveContainer>
         </div>
 
-        {/* BAR */}
+        {/* 🚨 SUPPLY vs DEMAND (FIXED LOGIC) */}
         <div className="chart-card">
-          <h3>Revenue vs Collector Supply</h3>
+          <h3>Demand vs Collector Supply Pressure</h3>
 
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={revenueData}>
+            <BarChart data={supplyDemand}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="collectors" label={{ value: 'Collectors', position: 'insideBottom', offset: -5 }} />
-              <YAxis label={{ value: 'Avg Revenue', angle: -90, position: 'insideLeft' }} />
+
+              <XAxis
+                dataKey="collectors"
+                label={{
+                  value: 'Collectors Available',
+                  position: 'insideBottom',
+                  offset: -5
+                }}
+              />
+
+              {/* LEFT = DEMAND */}
+              <YAxis
+                yAxisId="left"
+                label={{
+                  value: 'Household Demand',
+                  angle: -90,
+                  position: 'insideLeft'
+                }}
+              />
+
+              {/* RIGHT = REVENUE EFFICIENCY */}
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                label={{
+                  value: 'Revenue per Collector',
+                  angle: 90,
+                  position: 'insideRight'
+                }}
+              />
+
               <Tooltip />
-              <Bar dataKey="revenue" fill="#10b981" />
+              <Legend />
+
+              {/* DEMAND */}
+              <Bar
+                yAxisId="left"
+                dataKey="demand"
+                fill="#3b82f6"
+                name="Household Demand"
+              />
+
+              {/* REVENUE PER COLLECTOR */}
+              <Bar
+                yAxisId="right"
+                dataKey="revenuePerCollector"
+                fill="#10b981"
+                name="Revenue per Collector"
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
       </div>
-
     </div>
   );
 }
