@@ -3,119 +3,129 @@
   height: 100vh;
 }
 
+/* SIDEBAR */
 .sidebar {
   width: var(--sidebar-w);
   background: var(--panel);
-  color: var(--text);
   display: flex;
   flex-direction: column;
-  padding: 14px 12px;
+  padding: 16px 12px;
   border-right: 1px solid var(--border);
   position: fixed;
   inset: 0 auto 0 0;
-  height: 100vh;
 }
 
+/* LOGO */
 .logo {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 10px 14px;
-  margin-bottom: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
 }
 
-.logo-mark{
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+.logo-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
   background: var(--brand-600);
   color: white;
   display: grid;
   place-items: center;
   font-weight: 700;
-  letter-spacing: -0.4px;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
 }
 
-.logo-text{
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
-
-.logo-name{
+.logo-name {
   font-weight: 700;
   font-size: 13px;
-  letter-spacing: -0.2px;
 }
 
-.logo-sub{
-  margin-top: 3px;
+.logo-sub {
   font-size: 10px;
   color: var(--muted);
-  letter-spacing: 0.6px;
   text-transform: uppercase;
 }
 
+/* NAVIGATION */
 .nav-menu {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   padding: 8px 6px;
   overflow-y: auto;
-  -ms-overflow-style: none; /* IE/Edge */
-  scrollbar-width: none; /* Firefox */
 }
 
-.nav-menu::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+/* CATEGORY HEADERS */
+.nav-category-header {
+  margin: 14px 10px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
 }
 
+/* NAV LINKS */
 .nav-link {
-  padding: 10px 10px;
-  color: #334155;
+  padding: 10px 12px;
+  border-radius: 12px;
   text-decoration: none;
-  border-radius: 10px;
-  transition: background 0.15s, color 0.15s;
   font-size: 13px;
   font-weight: 600;
+  color: #334155;
   display: flex;
   align-items: center;
   gap: 10px;
+  position: relative;
+  transition: all 0.18s ease;
+}
+
+.nav-link svg {
+  width: 16px;
+  height: 16px;
+  opacity: 0.75;
 }
 
 .nav-link:hover {
-  background: rgba(15, 23, 42, 0.04);
+  background: rgba(15, 23, 42, 0.05);
 }
 
+/* ACTIVE STATE */
 .nav-link.active {
   background: var(--brand-50);
   color: var(--brand-700);
 }
 
-.nav-dot{
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(15, 23, 42, 0.2);
-  flex: 0 0 auto;
+.nav-link.active svg {
+  opacity: 1;
+  color: var(--brand-600);
 }
 
-.nav-link.active .nav-dot{
+/* LEFT INDICATOR */
+.nav-link.active::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 2px;
   background: var(--brand-600);
 }
 
+/* LOGOUT */
 .logout-btn {
-  margin: 10px 8px 6px;
+  margin: 12px 8px 8px;
   padding: 10px 12px;
   background: #fff0f0;
   color: #b42318;
   border: 1px solid rgba(180, 35, 24, 0.18);
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   transition: background 0.15s;
 }
 
@@ -123,28 +133,64 @@
   background: #ffe6e6;
 }
 
+/* MAIN */
 .main-content {
   flex: 1;
-  overflow-y: auto;
-  background: var(--bg);
   margin-left: var(--sidebar-w);
+  background: var(--bg);
   min-height: 100vh;
 }
 
-.topbar{
+/* TOPBAR */
+.topbar {
   height: var(--topbar-h);
   display: flex;
   align-items: center;
   padding: 0 28px;
   position: sticky;
   top: 0;
-  z-index: 5;
   background: rgba(245, 247, 251, 0.8);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(230, 234, 242, 0.8);
+  border-bottom: 1px solid var(--border);
+  z-index: 5;
 }
 
-.topbar-title{
+.topbar-title {
   font-weight: 700;
-  letter-spacing: -0.2px;
+  font-size: 15px;
+}
+
+/* COLLAPSIBLE SECTIONS */
+.nav-category-header {
+  margin: 14px 10px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.nav-category-header svg {
+  transition: transform 0.2s ease;
+}
+
+.nav-category-header svg.rotate {
+  transform: rotate(180deg);
+}
+
+/* SECTION ANIMATION */
+.nav-section {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-section.open {
+  max-height: 300px;
 }

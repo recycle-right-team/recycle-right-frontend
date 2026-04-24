@@ -1,0 +1,73 @@
+.broadcast-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.broadcast-form input,
+.broadcast-form textarea,
+.broadcast-form select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.broadcast-form textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+}
+
+.send-btn {
+    background: var(--brand-600);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.broadcast-history {
+    margin-top: 20px;
+}
+
+.broadcast-card {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+.broadcast-card.warning {
+    border-left: 4px solid orange;
+}
+
+.broadcast-card.emergency {
+    border-left: 4px solid red;
+}
+
+.broadcast-card.info {
+    border-left: 4px solid var(--brand-600);
+}
+
+.broadcast-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.broadcast-meta {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    gap: 10px;
+}

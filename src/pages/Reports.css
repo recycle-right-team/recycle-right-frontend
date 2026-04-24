@@ -122,3 +122,60 @@
   padding: 3rem;
   color: #6b7280;
 }
+
+.report-stats {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.stat-card {
+  flex: 1;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.stat-card h3 {
+  margin: 0;
+}
+
+.stat-card.open h3 {
+  color: #b91c1c;
+}
+
+.stat-card.resolved h3 {
+  color: #059669;
+}
+
+.report-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.search-input {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.filter-buttons button {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+}
+
+.filter-buttons .active {
+  background: var(--brand-600);
+  color: white;
+}

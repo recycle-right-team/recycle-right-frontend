@@ -1,41 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {
+  BarChart, Bar, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+} from 'recharts';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import './Analytics.css';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6'];
 
+// 🧪 MOCK DATA
+const mockKPIs = {
+  totalWaste: 12500,
+  participationRate: 68,
+  avgCollectionTime: 14,
+  totalPayout: 320000
+};
+
+const mockWaste = {
+  Plastic: 4200,
+  Paper: 3000,
+  Metal: 2200,
+  Glass: 3100
+};
+
+const mockRevenue = [
+  { collectors: 5, revenue: 1200 },
+  { collectors: 10, revenue: 2000 },
+  { collectors: 15, revenue: 2600 },
+  { collectors: 20, revenue: 3100 },
+  { collectors: 25, revenue: 3300 }
+];
+
 function Analytics() {
-  const [wasteByType, setWasteByType] = useState({});
-  const [collectorGrowth, setCollectorGrowth] = useState([]);
-  const [pickupTrends, setPickupTrends] = useState([]);
-  const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
+  const [kpis, setKpis] = useState(mockKPIs);
+  const [wasteByType, setWasteByType] = useState(mockWaste);
+  const [revenueData, setRevenueData] = useState(mockRevenue);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, []);
 
   const fetchAnalytics = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const params = dateRange.startDate && dateRange.endDate 
-        ? `?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`
-        : '';
+      // 🔌 Replace with real API later
+      setKpis(mockKPIs);
+      setWasteByType(mockWaste);
+      setRevenueData(mockRevenue);
 
-      const [wasteRes, growthRes, trendsRes] = await Promise.all([
-        axios.get(`/api/analytics/waste-by-type${params}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        axios.get('/api/analytics/collector-growth', {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        axios.get('/api/analytics/pickup-trends', {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-      ]);
-
-      setWasteByType(wasteRes.data);
-      setCollectorGrowth(growthRes.data);
-      setPickupTrends(trendsRes.data);
       setLoading(false);
     } catch (err) {
       console.error('Error fetching analytics:', err);
@@ -43,57 +57,26 @@ function Analytics() {
     }
   };
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, [dateRange]);
-
   const exportToPDF = () => {
     const doc = new jsPDF();
-    
-    doc.setFontSize(20);
-    doc.text('RecycleRight Pakistan - Analytics Report', 14, 20);
-    
+
+    doc.setFontSize(18);
+    doc.text('RecycleRight Analytics Report', 14, 20);
+
     doc.setFontSize(12);
     doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
-    
-    if (dateRange.startDate && dateRange.endDate) {
-      doc.text(`Period: ${dateRange.startDate} to ${dateRange.endDate}`, 14, 38);
-    }
 
-    // Waste by Type
-    doc.setFontSize(16);
-    doc.text('Waste Diverted by Type', 14, 50);
-    
-    const wasteData = Object.entries(wasteByType).map(([type, weight]) => [type, `${weight.toFixed(2)} kg`]);
-    doc.autoTable({
-      startY: 55,
-      head: [['Waste Type', 'Weight']],
-      body: wasteData
-    });
+    doc.text(`Total Waste: ${kpis.totalWaste} kg`, 14, 45);
+    doc.text(`Participation: ${kpis.participationRate}%`, 14, 52);
+    doc.text(`Avg Time: ${kpis.avgCollectionTime} min`, 14, 59);
+    doc.text(`Total Payout: PKR ${kpis.totalPayout}`, 14, 66);
 
-    // Pickup Trends
-    doc.addPage();
-    doc.setFontSize(16);
-    doc.text('Recent Pickup Trends', 14, 20);
-    
-    const trendsData = pickupTrends.slice(-10).map(trend => [
-      trend.date,
-      trend.count.toString(),
-      `${trend.weight} kg`
-    ]);
-    
-    doc.autoTable({
-      startY: 25,
-      head: [['Date', 'Pickups', 'Weight']],
-      body: trendsData
-    });
-
-    doc.save('recycleright-analytics.pdf');
+    doc.save('analytics.pdf');
   };
 
-  const wasteChartData = Object.entries(wasteByType).map(([type, weight]) => ({
+  const wasteChartData = Object.entries(wasteByType).map(([type, value]) => ({
     name: type,
-    value: parseFloat(weight.toFixed(2))
+    value
   }));
 
   if (loading) {
@@ -102,51 +85,62 @@ function Analytics() {
 
   return (
     <div className="ui-page analytics-page">
+
+      {/* HEADER */}
       <div className="ui-pageHeader">
         <div>
-          <h1 className="ui-pageTitle">Analytics & Reports</h1>
-          <p className="ui-pageSubtitle">Comprehensive insights into waste management operations</p>
+          <h1 className="ui-pageTitle">Analytics Dashboard</h1>
+          <p className="ui-pageSubtitle">Operational insights & performance metrics</p>
         </div>
-      </div>
 
-      <div className="analytics-controls">
-        <div className="date-range-picker">
-          <input
-            type="date"
-            value={dateRange.startDate}
-            onChange={(e) => setDateRange({ ...dateRange, startDate: e.target.value })}
-            placeholder="Start Date"
-          />
-          <span>to</span>
-          <input
-            type="date"
-            value={dateRange.endDate}
-            onChange={(e) => setDateRange({ ...dateRange, endDate: e.target.value })}
-            placeholder="End Date"
-          />
-        </div>
         <button className="export-btn" onClick={exportToPDF}>
           📄 Export PDF
         </button>
       </div>
 
+      {/* 🔝 KPI BAR */}
+      <div className="kpi-bar">
+
+        <div className="kpi-card">
+          <p>Total Waste</p>
+          <h2>{kpis.totalWaste} kg</h2>
+        </div>
+
+        <div className="kpi-card">
+          <p>Participation</p>
+          <h2>{kpis.participationRate}%</h2>
+        </div>
+
+        <div className="kpi-card">
+          <p>Avg Collection</p>
+          <h2>{kpis.avgCollectionTime} min</h2>
+        </div>
+
+        <div className="kpi-card">
+          <p>Total Payout</p>
+          <h2>PKR {kpis.totalPayout}</h2>
+        </div>
+
+      </div>
+
+      {/* 📊 CHARTS */}
       <div className="charts-grid">
+
+        {/* PIE */}
         <div className="chart-card">
-          <h3>Waste Diverted by Type</h3>
+          <h3>Waste by Type</h3>
+
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
                 data={wasteChartData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, value }) => `${name}: ${value} kg`}
-                outerRadius={100}
-                fill="#8884d8"
                 dataKey="value"
+                nameKey="name"
+                outerRadius={100}
+                label
               >
                 {wasteChartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
               <Tooltip />
@@ -154,36 +148,23 @@ function Analytics() {
           </ResponsiveContainer>
         </div>
 
+        {/* BAR */}
         <div className="chart-card">
-          <h3>Collector Growth</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={collectorGrowth}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="count" stroke="#10b981" strokeWidth={2} name="Collectors" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+          <h3>Revenue vs Collector Supply</h3>
 
-        <div className="chart-card full-width">
-          <h3>Pickup Trends</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={pickupTrends.slice(-30)}>
+            <BarChart data={revenueData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis yAxisId="left" />
-              <YAxis yAxisId="right" orientation="right" />
+              <XAxis dataKey="collectors" label={{ value: 'Collectors', position: 'insideBottom', offset: -5 }} />
+              <YAxis label={{ value: 'Avg Revenue', angle: -90, position: 'insideLeft' }} />
               <Tooltip />
-              <Legend />
-              <Bar yAxisId="left" dataKey="count" fill="#3b82f6" name="Pickups" />
-              <Bar yAxisId="right" dataKey="weight" fill="#10b981" name="Weight (kg)" />
+              <Bar dataKey="revenue" fill="#10b981" />
             </BarChart>
           </ResponsiveContainer>
         </div>
+
       </div>
+
     </div>
   );
 }

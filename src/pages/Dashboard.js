@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './Dashboard.css';
 
-const STATS = [
-  { label: 'Waste Diverted Today', value: '0.00', unit: 'kg', accent: 'accent-green', change: '— no pickups yet' },
-  { label: 'Completed Pickups',    value: '0',    unit: '',   accent: 'accent-blue',  change: '— no pickups yet' },
-  { label: 'Active Collectors',    value: '0',    unit: '',   accent: 'accent-amber', change: '— none assigned' },
-  { label: 'Registered Households',value: '0',    unit: '',   accent: 'accent-purple',change: '— none onboarded' },
-];
+// 🧪 MOCK DATA
+const mockStats = {
+  wasteToday: 124.5,
+  pickups: 32,
+  collectors: 8,
+  households: 120
+};
 
 const RECENT_PICKUPS = [
   { name: 'Household #412', meta: 'Sector 4 · 08:30 AM', amount: '3.2 kg', status: 'completed' },
   { name: 'Household #309', meta: 'Sector 2 · 09:15 AM', amount: '1.8 kg', status: 'pending' },
-  { name: 'Household #517', meta: 'Sector 7 · 10:00 AM', amount: '—',      status: 'missed' },
+  { name: 'Household #517', meta: 'Sector 7 · 10:00 AM', amount: '—', status: 'missed' },
 ];
 
 const TOP_COLLECTORS = [
-  { name: 'Ahmad Bilal',   zone: 'Sector 4', pickups: 42, kg: '128.4' },
-  { name: 'Sara Noor',     zone: 'Sector 2', pickups: 38, kg: '110.2' },
-  { name: 'Usman Khalid',  zone: 'Sector 7', pickups: 35, kg: '98.7'  },
-  { name: 'Fatima Iqbal',  zone: 'Sector 1', pickups: 31, kg: '87.3'  },
+  { name: 'Ahmad Bilal', zone: 'Sector 4', pickups: 42, kg: '128.4' },
+  { name: 'Sara Noor', zone: 'Sector 2', pickups: 38, kg: '110.2' },
+  { name: 'Usman Khalid', zone: 'Sector 7', pickups: 35, kg: '98.7' },
+  { name: 'Fatima Iqbal', zone: 'Sector 1', pickups: 31, kg: '87.3' },
 ];
 
 const WEEK_BARS = [
@@ -31,15 +33,14 @@ const WEEK_BARS = [
   { day: 'Sun', pct: 20 },
 ];
 
-function StatCard({ stat }) {
+function StatCard({ label, value, unit, accent }) {
   return (
-    <div className={`stat-card ${stat.accent}`}>
-      <span className="stat-label">{stat.label}</span>
+    <div className={`stat-card ${accent}`}>
+      <span className="stat-label">{label}</span>
       <div className="stat-value">
-        {stat.value}
-        {stat.unit && <span className="stat-unit"> {stat.unit}</span>}
+        {value}
+        {unit && <span className="stat-unit"> {unit}</span>}
       </div>
-      <span className={`stat-change neutral`}>{stat.change}</span>
     </div>
   );
 }
@@ -49,8 +50,8 @@ function RecentPickups() {
     <div className="panel">
       <div className="panel-header">
         <span className="panel-title">Recent pickups</span>
-        <button className="panel-action">View all</button>
       </div>
+
       <div className="activity-list">
         {RECENT_PICKUPS.map((row, i) => (
           <div className="activity-row" key={i}>
@@ -58,6 +59,7 @@ function RecentPickups() {
               <span className="activity-name">{row.name}</span>
               <span className="activity-meta">{row.meta}</span>
             </div>
+
             <div className="activity-right">
               <span className="activity-amount">{row.amount}</span>
               <span className={`status-pill ${row.status}`}>{row.status}</span>
@@ -73,13 +75,13 @@ function WeeklyActivity() {
   return (
     <div className="panel">
       <div className="panel-header">
-        <span className="panel-title">Weekly waste (kg)</span>
-        <button className="panel-action">This week</button>
+        <span className="panel-title">Weekly waste</span>
       </div>
+
       <div className="bar-chart">
         {WEEK_BARS.map(b => (
           <div className="bar-col" key={b.day}>
-            <div className="bar-fill" style={{ height: `${b.pct}%` }} title={`${b.day}`} />
+            <div className="bar-fill" style={{ height: `${b.pct}%` }} />
             <span className="bar-label">{b.day}</span>
           </div>
         ))}
@@ -93,8 +95,8 @@ function TopCollectors() {
     <div className="panel panel-full">
       <div className="panel-header">
         <span className="panel-title">Top collectors</span>
-        <button className="panel-action">View all</button>
       </div>
+
       <table className="data-table">
         <thead>
           <tr>
@@ -120,10 +122,28 @@ function TopCollectors() {
 }
 
 function Dashboard() {
+  const [stats, setStats] = useState(mockStats);
   const [lastRefresh, setLastRefresh] = useState(new Date());
 
+  const fetchStats = async () => {
+    try {
+      // 🔌 Replace with API later
+      // const token = localStorage.getItem('token');
+      // const res = await axios.get('/api/dashboard', {
+      //   headers: { Authorization: `Bearer ${token}` }
+      // });
+      // setStats(res.data);
+
+      setStats(mockStats);
+      setLastRefresh(new Date());
+    } catch (err) {
+      console.error('Error fetching stats:', err);
+    }
+  };
+
   useEffect(() => {
-    const timer = setInterval(() => setLastRefresh(new Date()), 60000);
+    fetchStats();
+    const timer = setInterval(fetchStats, 60000);
     return () => clearInterval(timer);
   }, []);
 
@@ -131,26 +151,56 @@ function Dashboard() {
 
   return (
     <div className="ui-page dashboard-page">
+
       <div className="ui-pageHeader">
         <div>
           <h1 className="ui-pageTitle">Dashboard</h1>
-          <p className="ui-pageSubtitle">Real-time overview of RecycleRight operations</p>
+          <p className="ui-pageSubtitle">Real-time overview of operations</p>
         </div>
+
         <div className="dashboard-refresh">
           <span className="refresh-dot" />
           Auto-refresh · last {timeStr}
         </div>
       </div>
 
+      {/* 🔥 KPI GRID */}
       <div className="stat-grid">
-        {STATS.map((s, i) => <StatCard stat={s} key={i} />)}
+
+        <StatCard
+          label="Waste Today"
+          value={stats.wasteToday}
+          unit="kg"
+          accent="accent-green"
+        />
+
+        <StatCard
+          label="Completed Pickups"
+          value={stats.pickups}
+          accent="accent-blue"
+        />
+
+        <StatCard
+          label="Active Collectors"
+          value={stats.collectors}
+          accent="accent-amber"
+        />
+
+        <StatCard
+          label="Households"
+          value={stats.households}
+          accent="accent-purple"
+        />
+
       </div>
 
+      {/* PANELS */}
       <div className="panel-grid">
         <RecentPickups />
         <WeeklyActivity />
         <TopCollectors />
       </div>
+
     </div>
   );
 }
